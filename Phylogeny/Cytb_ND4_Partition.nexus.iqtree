@@ -1,0 +1,260 @@
+IQ-TREE 1.6.12 built Aug 15 2019
+
+Partition file name: ../Imantodes/Cytb_ND4_Partition.nexus
+Input file name: ../Imantodes/Cytb_ND4_Alignment.fasta
+Type of analysis: ModelFinder + tree reconstruction + ultrafast bootstrap (1000 replicates)
+Random seed number: 646929
+
+REFERENCES
+----------
+
+To cite ModelFinder please use: 
+
+Subha Kalyaanamoorthy, Bui Quang Minh, Thomas KF Wong, Arndt von Haeseler,
+and Lars S Jermiin (2017) ModelFinder: Fast model selection for
+accurate phylogenetic estimates. Nature Methods, 14:587–589.
+https://doi.org/10.1038/nmeth.4285
+
+To cite IQ-TREE please use:
+
+Lam-Tung Nguyen, Heiko A. Schmidt, Arndt von Haeseler, and Bui Quang Minh
+(2015) IQ-TREE: A fast and effective stochastic algorithm for estimating
+maximum likelihood phylogenies. Mol Biol Evol, 32:268-274.
+https://doi.org/10.1093/molbev/msu300
+
+Since you used ultrafast bootstrap (UFBoot) please also cite: 
+
+Diep Thi Hoang, Olga Chernomor, Arndt von Haeseler, Bui Quang Minh,
+and Le Sy Vinh (2017) UFBoot2: Improving the ultrafast bootstrap
+approximation. Mol Biol Evol, in press.
+https://doi.org/10.1093/molbev/msx281
+
+Since you used partition models please also cite:
+
+Olga Chernomor, Arndt von Haeseler, and Bui Quang Minh (2016)
+Terrace aware data structure for phylogenomic inference from
+supermatrices. Syst Biol, 65:997-1008.
+https://doi.org/10.1093/sysbio/syw037
+
+SEQUENCE ALIGNMENT
+------------------
+
+Input data: 33 taxa with 2 partitions and 2586 total sites (0% missing data)
+
+  ID  Name                        Type	Seq	Site	Unique	Infor	Invar	Const
+   1  cytb1+cytb2+nd41+nd42+nd43  DNA	33	2216	273	206	1875	1875
+   2  cytb3                       DNA	33	370	295	216	102	102
+
+Column meanings:
+  Unique: Number of unique site patterns
+  Infor:  Number of parsimony-informative sites
+  Invar:  Number of invariant sites
+  Const:  Number of constant sites (can be subset of invariant sites)
+
+ModelFinder
+-----------
+
+Best-fit model according to BIC: TIM2+F+R2:cytb1+cytb2+nd41+nd42+nd43,TIM3+F+G4:cytb3
+
+List of best-fit models per partition:
+
+  ID  Model             LogL          AIC      w-AIC      AICc     w-AICc       BIC      w-BIC
+   1  TIM2+F+R2        -6256.8188  12655.6375 + 0.0000  12660.4062 - 0.0000  13060.5831 - 0.0000
+   2  TIM3+F+G4        -2965.0145   6070.0290 + 0.0000   6103.2732 - 0.0000   6343.9742 - 0.0000
+
+AIC, w-AIC   : Akaike information criterion scores and weights.
+AICc, w-AICc : Corrected AIC scores and weights.
+BIC, w-BIC   : Bayesian information criterion scores and weights.
+
+Plus signs denote the 95% confidence sets.
+Minus signs denote significant exclusion.
+
+SUBSTITUTION PROCESS
+--------------------
+
+Edge-unlinked partition model and separate models between partitions
+
+  ID  Model         TreeLen  Parameters
+   1  TIM2+F+R2      0.5915  TIM2{5.50102,28.8181,58.6588}+F{0.329599,0.260573,0.153702,0.256126}+R2{0.855149,0.15296,0.144851,6.00061}
+   2  TIM3+F+G4      5.1905  TIM3{0.437671,39.1394,10.9158}+F{0.399559,0.403533,0.020898,0.17601}+G4{1.82977}
+
+MAXIMUM LIKELIHOOD TREE
+-----------------------
+
+Log-likelihood of the tree: -9210.6161 (s.e. 220.8760)
+Unconstrained log-likelihood (without tree): -11351.5946
+Number of free parameters (#branches + #model parameters): 141
+Akaike information criterion (AIC) score: 18703.2322
+Corrected Akaike information criterion (AICc) score: 18719.6168
+Bayesian information criterion (BIC) score: 19529.1915
+
+Total tree length (sum of branch lengths): 1.2495
+Sum of internal branch lengths: 0.6845 (54.7803% of tree length)
+
+WARNING: 2 near-zero internal branches (<0.0004) should be treated with caution
+         Such branches are denoted by '**' in the figure below
+
+NOTE: Tree is UNROOTED although outgroup taxon 'Imantodes_cenchoa_UTAR42360' is drawn at root
+NOTE: Branch lengths are weighted average over all partitions
+      (weighted by the number of sites in the partitions)
+Numbers in parentheses are  ultrafast bootstrap support (%)
+
++--Imantodes_cenchoa_UTAR42360
+|
+|                      +--Imantodes_cenchoa_SIUCR03724
+|                   +**| (56)
+|                   |  +--Imantodes_cenchoa_MHUA14500
+|                +--| (88)
+|                |  |     +--Imantodes_cenchoa_CORBIDI8823
+|                |  |  +--| (100)
+|                |  |  |  +--Imantodes_cenchoa_IBSP90389
+|                |  +--| (92)
+|                |     +--Imantodes_cenchoa_MZUSP15524
+|             +--| (70)
+|             |  |     +--Imantodes_cenchoa_MHUA14290
+|             |  |  +--| (100)
+|             |  |  |  +--Imantodes_cenchoa_JMD1616
+|             |  +--| (99)
+|             |     |     +--Imantodes_cenchoa_QCAZ11115
+|             |     |  +--| (100)
+|             |     |  |  +--Imantodes_cenchoa_CORBIDI3794
+|             |     +--| (100)
+|             |        +--Imantodes_cenchoa_QCAZ4207
+|          +--| (77)
+|          |  |  +--Imantodes_cenchoa_IBSP89901
+|          |  +--| (100)
+|          |     +---Imantodes_cenchoa_IBSP90474
+|       +--| (49)
+|       |  +------Imantodes_cenchoa_MVZ149878
+|    +--| (95)
+|    |  +--Imantodes_cenchoa_MPEGLJV5763
++----| (100)
+|    |                           +**Imantodes_gemmistratus_UTAR51979
+|    |         +-----------------| (100)
+|    |         |                 +--Imantodes_gemmistratus_LSUMZ39541
+|    |      +--| (92)
+|    |      |  +---------------------Imantodes_gemmistratus_UTAR459222
+|    |  +---| (83)
+|    |  |   |                                            +--Imantodes_inornatus_MVZ204109
+|    |  |   |                                         +**| (50)
+|    |  |   |                                         |  +**Imantodes_inornatus_ASL307
+|    |  |   |                                   +-----| (100)
+|    |  |   |                                   |     +--Imantodes_inornatus_MVZ204110
+|    |  |   |             +---------------------| (100)
+|    |  |   |             |                     +-----Imantodes_cenchoa_MHUA14540
+|    |  |   +-------------| (100)
+|    |  |                 +-------------------------------Leptodeira_septentrionalis_QCAZ10550
+|    +--| (94)
+|       |                                    +--Imantodes_lentiferus_MPEGLJV6880
+|       |                                 +--| (85)
+|       |                                 |  +--Imantodes_lentiferus_MPEGLJV5581
+|       |                              +--| (87)
+|       |                              |  +--Imantodes_lentiferus_QCAZ8488
+|       |                         +----| (68)
+|       |                         |    +--Imantodes_lentiferus_QCAZ8377
+|       |                  +------| (63)
+|       |                  |      +--Imantodes_chocoensis_QCAZ7984
+|       |  +---------------| (100)
+|       |  |               |         +----Imantodes_cenchoa_QCAZ6300
+|       |  |               |      +--| (59)
+|       |  |               |      |  +----Imantodes_lentiferus_QCAZ9187
+|       |  |               +------| (59)
+|       |  |                      +**Imantodes_chocoensis_QCAZ7978
+|       +--| (64)
+|          +--Imantodes_chocoensis_UTAR60205
+|
++--Imantodes_cenchoa_CHFCB0201
+
+Tree in newick format:
+
+(Imantodes_cenchoa_UTAR42360:0.0093023531,(((((((Imantodes_cenchoa_SIUCR03724:0.0155853290,Imantodes_cenchoa_MHUA14500:0.0177800915)56:0.0002868309,((Imantodes_cenchoa_CORBIDI8823:0.0006378943,Imantodes_cenchoa_IBSP90389:0.0020385316)100:0.0063424357,Imantodes_cenchoa_MZUSP15524:0.0149112408)92:0.0034051824)88:0.0053417359,((Imantodes_cenchoa_MHUA14290:0.0010101823,Imantodes_cenchoa_JMD1616:0.0041195552)100:0.0105040138,((Imantodes_cenchoa_QCAZ11115:0.0017786460,Imantodes_cenchoa_CORBIDI3794:0.0009850347)100:0.0095267401,Imantodes_cenchoa_QCAZ4207:0.0093870975)100:0.0079135086)99:0.0067317237)70:0.0004119870,(Imantodes_cenchoa_IBSP89901:0.0074796490,Imantodes_cenchoa_IBSP90474:0.0221591963)100:0.0077289814)77:0.0049712731,Imantodes_cenchoa_MVZ149878:0.0370291333)49:0.0039278151,Imantodes_cenchoa_MPEGLJV5763:0.0152976997)95:0.0068151214,((((Imantodes_gemmistratus_UTAR51979:0.0000020571,Imantodes_gemmistratus_LSUMZ39541:0.0014889890)100:0.0953894319,Imantodes_gemmistratus_UTAR459222:0.1133620982)92:0.0177467323,((((Imantodes_inornatus_MVZ204109:0.0022731093,Imantodes_inornatus_ASL307:0.0000021727)50:0.0000028155,Imantodes_inornatus_MVZ204110:0.0019194200)100:0.0318489476,Imantodes_cenchoa_MHUA14540:0.0304704493)100:0.1130796734,Leptodeira_septentrionalis_QCAZ10550:0.1661543849)100:0.0738889842)83:0.0208796832,((((((Imantodes_lentiferus_MPEGLJV6880:0.0039663371,Imantodes_lentiferus_MPEGLJV5581:0.0059516431)85:0.0013818924,Imantodes_lentiferus_QCAZ8488:0.0052065067)87:0.0005550082,Imantodes_lentiferus_QCAZ8377:0.0036842849)68:0.0289377444,Imantodes_chocoensis_QCAZ7984:0.0004816052)63:0.0354973017,((Imantodes_cenchoa_QCAZ6300:0.0284528972,Imantodes_lentiferus_QCAZ9187:0.0255312602)59:0.0137660638,Imantodes_chocoensis_QCAZ7978:0.0000021570)59:0.0369174042)100:0.0831182859,Imantodes_chocoensis_UTAR60205:0.0008157588)64:0.0161424020)94:0.0132505570)100:0.0281926654,Imantodes_cenchoa_CHFCB0201:0.0157722170);
+
+CONSENSUS TREE
+--------------
+
+Consensus tree is constructed from 1000bootstrap trees
+Log-likelihood of consensus tree: -9210.614906
+Robinson-Foulds distance between ML tree and consensus tree: 0
+
+Branches with support >0.000000% are kept (extended consensus)
+Branch lengths are optimized by maximum likelihood on original alignment
+Numbers in parentheses are bootstrap supports (%)
+
++--Imantodes_cenchoa_UTAR42360
+|
+|                      +--Imantodes_cenchoa_SIUCR03724
+|                   +--| (56)
+|                   |  +--Imantodes_cenchoa_MHUA14500
+|                +--| (88)
+|                |  |     +--Imantodes_cenchoa_CORBIDI8823
+|                |  |  +--| (100)
+|                |  |  |  +--Imantodes_cenchoa_IBSP90389
+|                |  +--| (92)
+|                |     +--Imantodes_cenchoa_MZUSP15524
+|             +--| (70)
+|             |  |     +--Imantodes_cenchoa_MHUA14290
+|             |  |  +--| (100)
+|             |  |  |  +--Imantodes_cenchoa_JMD1616
+|             |  +--| (99)
+|             |     |     +--Imantodes_cenchoa_QCAZ11115
+|             |     |  +--| (100)
+|             |     |  |  +--Imantodes_cenchoa_CORBIDI3794
+|             |     +--| (100)
+|             |        +--Imantodes_cenchoa_QCAZ4207
+|          +--| (77)
+|          |  |  +--Imantodes_cenchoa_IBSP89901
+|          |  +--| (100)
+|          |     +---Imantodes_cenchoa_IBSP90474
+|       +--| (49)
+|       |  +------Imantodes_cenchoa_MVZ149878
+|    +--| (95)
+|    |  +--Imantodes_cenchoa_MPEGLJV5763
++----| (100)
+|    |                           +--Imantodes_gemmistratus_UTAR51979
+|    |         +-----------------| (100)
+|    |         |                 +--Imantodes_gemmistratus_LSUMZ39541
+|    |      +--| (92)
+|    |      |  +---------------------Imantodes_gemmistratus_UTAR459222
+|    |  +---| (83)
+|    |  |   |                                            +--Imantodes_inornatus_MVZ204109
+|    |  |   |                                         +--| (50)
+|    |  |   |                                         |  +--Imantodes_inornatus_ASL307
+|    |  |   |                                   +-----| (100)
+|    |  |   |                                   |     +--Imantodes_inornatus_MVZ204110
+|    |  |   |             +---------------------| (100)
+|    |  |   |             |                     +-----Imantodes_cenchoa_MHUA14540
+|    |  |   +-------------| (100)
+|    |  |                 +-------------------------------Leptodeira_septentrionalis_QCAZ10550
+|    +--| (94)
+|       |                                    +--Imantodes_lentiferus_MPEGLJV6880
+|       |                                 +--| (85)
+|       |                                 |  +--Imantodes_lentiferus_MPEGLJV5581
+|       |                              +--| (87)
+|       |                              |  +--Imantodes_lentiferus_QCAZ8488
+|       |                         +----| (68)
+|       |                         |    +--Imantodes_lentiferus_QCAZ8377
+|       |                  +------| (63)
+|       |                  |      +--Imantodes_chocoensis_QCAZ7984
+|       |  +---------------| (100)
+|       |  |               |         +----Imantodes_cenchoa_QCAZ6300
+|       |  |               |      +--| (59)
+|       |  |               |      |  +----Imantodes_lentiferus_QCAZ9187
+|       |  |               +------| (59)
+|       |  |                      +--Imantodes_chocoensis_QCAZ7978
+|       +--| (64)
+|          +--Imantodes_chocoensis_UTAR60205
+|
++--Imantodes_cenchoa_CHFCB0201
+
+
+Consensus tree in newick format: 
+
+(Imantodes_cenchoa_UTAR42360:0.0092997592,(((((((Imantodes_cenchoa_SIUCR03724:0.0155923155,Imantodes_cenchoa_MHUA14500:0.0177756045)56:0.0002844339,((Imantodes_cenchoa_CORBIDI8823:0.0006381536,Imantodes_cenchoa_IBSP90389:0.0020399667)100:0.0063434984,Imantodes_cenchoa_MZUSP15524:0.0148967287)92:0.0034071143)88:0.0053353892,((Imantodes_cenchoa_MHUA14290:0.0010102914,Imantodes_cenchoa_JMD1616:0.0041169558)100:0.0104931802,((Imantodes_cenchoa_QCAZ11115:0.0017765860,Imantodes_cenchoa_CORBIDI3794:0.0009853103)100:0.0095114505,Imantodes_cenchoa_QCAZ4207:0.0093760034)100:0.0079173538)99:0.0067335279)70:0.0004111091,(Imantodes_cenchoa_IBSP89901:0.0074781540,Imantodes_cenchoa_IBSP90474:0.0221474474)100:0.0077259436)77:0.0049721477,Imantodes_cenchoa_MVZ149878:0.0370227200)49:0.0039359310,Imantodes_cenchoa_MPEGLJV5763:0.0152942178)95:0.0068177229,((((Imantodes_gemmistratus_UTAR51979:0.0000026967,Imantodes_gemmistratus_LSUMZ39541:0.0014875530)100:0.0952720751,Imantodes_gemmistratus_UTAR459222:0.1134545961)92:0.0177495485,((((Imantodes_inornatus_MVZ204109:0.0022710025,Imantodes_inornatus_ASL307:0.0000023222)50:0.0000023226,Imantodes_inornatus_MVZ204110:0.0019196403)100:0.0318372833,Imantodes_cenchoa_MHUA14540:0.0304690716)100:0.1131232268,Leptodeira_septentrionalis_QCAZ10550:0.1661398677)100:0.0739522836)83:0.0208251627,((((((Imantodes_lentiferus_MPEGLJV6880:0.0039678816,Imantodes_lentiferus_MPEGLJV5581:0.0059499042)85:0.0013818643,Imantodes_lentiferus_QCAZ8488:0.0052052903)87:0.0005556999,Imantodes_lentiferus_QCAZ8377:0.0036829022)68:0.0289264847,Imantodes_chocoensis_QCAZ7984:0.0004810340)63:0.0355138216,((Imantodes_cenchoa_QCAZ6300:0.0284231737,Imantodes_lentiferus_QCAZ9187:0.0255016225)59:0.0137975116,Imantodes_chocoensis_QCAZ7978:0.0000020783)59:0.0368826977)100:0.0831379947,Imantodes_chocoensis_UTAR60205:0.0008249160)64:0.0162631516)94:0.0131206777)100:0.0282075001,Imantodes_cenchoa_CHFCB0201:0.0157642014);
+
+TIME STAMP
+----------
+
+Date and time: Sun May  3 13:19:58 2020
+Total CPU time used: 71.50822 seconds (0h:1m:11s)
+Total wall-clock time used: 12.3534379 seconds (0h:0m:12s)
+

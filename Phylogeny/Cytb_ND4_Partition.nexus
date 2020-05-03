@@ -1,0 +1,9 @@
+#nexus
+begin sets;
+    charset cytb1 = 1-1110\3;
+    charset cytb2 = 2-1110\3;
+    charset cytb3 = 3-1110\3;
+    charset nd41 = 1111-2585\3;
+    charset nd42 = 1111-2585\3;
+    charset nd43 = 1111-2585\3;
+end;

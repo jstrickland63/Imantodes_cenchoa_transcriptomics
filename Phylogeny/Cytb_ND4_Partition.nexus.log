@@ -1,0 +1,230 @@
+IQ-TREE multicore version 1.6.12 for Mac OS X 64-bit built Aug 15 2019
+Developed by Bui Quang Minh, Nguyen Lam Tung, Olga Chernomor,
+Heiko Schmidt, Dominik Schrempf, Michael Woodhams.
+
+Host:    Jasons-iMac.attlocal.net (AVX2, FMA3, 32 GB RAM)
+Command: iqtree -s ../Imantodes/Cytb_ND4_Alignment.fasta -sp ../Imantodes/Cytb_ND4_Partition.nexus -m MFP+MERGE -bb 1000 -nt 6
+Seed:    646929 (Using SPRNG - Scalable Parallel Random Number Generator)
+Time:    Sun May  3 13:19:05 2020
+Kernel:  AVX+FMA - 6 threads (8 CPU cores detected)
+
+Reading partition model file ../Imantodes/Cytb_ND4_Partition.nexus ...
+Reading alignment file ../Imantodes/Cytb_ND4_Alignment.fasta ... Fasta format detected
+Alignment most likely contains DNA/RNA sequences
+Alignment has 33 sequences with 2585 columns, 716 distinct patterns
+489 parsimony-informative, 211 singleton sites, 1884 constant sites
+                                      Gap/Ambiguity  Composition  p-value
+   1  Imantodes_cenchoa_UTAR42360            44.84%    passed     48.92%
+   2  Imantodes_cenchoa_SIUCR03724           44.80%    passed     64.93%
+   3  Imantodes_cenchoa_MPEGLJV5763          44.80%    passed     88.02%
+   4  Imantodes_gemmistratus_UTAR51979       44.95%    passed     52.02%
+   5  Imantodes_gemmistratus_LSUMZ39541      44.95%    passed     40.59%
+   6  Imantodes_inornatus_MVZ204109          44.95%    passed     46.78%
+   7  Imantodes_inornatus_MVZ204110          46.11%    passed     26.45%
+   8  Imantodes_lentiferus_MPEGLJV6880       44.95%    passed     56.26%
+   9  Imantodes_lentiferus_MPEGLJV5581       44.95%    passed     55.41%
+  10  Imantodes_cenchoa_MVZ149878             5.30%    passed     76.25%
+  11  Imantodes_cenchoa_MHUA14290            31.80%    passed     92.21%
+  12  Imantodes_cenchoa_MHUA14500            31.76%    passed     95.05%
+  13  Imantodes_cenchoa_JMD1616              44.53%    passed     54.41%
+  14  Imantodes_gemmistratus_UTAR459222      49.48%    passed     95.28%
+  15  Imantodes_cenchoa_MHUA14540            31.76%    passed     78.92%
+  16  Imantodes_inornatus_ASL307             46.11%    passed     90.17%
+  17  Leptodeira_septentrionalis_QCAZ10550   35.24%    passed     87.98%
+  18  Imantodes_cenchoa_QCAZ11115            36.17%    passed     95.14%
+  19  Imantodes_cenchoa_CORBIDI3794          37.37%    passed     95.09%
+  20  Imantodes_cenchoa_CORBIDI8823          45.18%    passed     66.56%
+  21  Imantodes_cenchoa_MZUSP15524           61.43%    passed     54.73%
+  22  Imantodes_cenchoa_QCAZ4207             37.45%    passed     98.80%
+  23  Imantodes_cenchoa_QCAZ6300             44.22%    passed     85.38%
+  24  Imantodes_chocoensis_QCAZ7978          37.10%    passed     75.12%
+  25  Imantodes_chocoensis_QCAZ7984          36.71%    passed     95.87%
+  26  Imantodes_lentiferus_QCAZ8377          41.35%    passed     81.30%
+  27  Imantodes_lentiferus_QCAZ8488          43.02%    passed     91.60%
+  28  Imantodes_lentiferus_QCAZ9187          61.82%    passed     79.84%
+  29  Imantodes_chocoensis_UTAR60205         48.36%    passed     74.37%
+  30  Imantodes_cenchoa_CHFCB0201             5.30%    passed     87.68%
+  31  Imantodes_cenchoa_IBSP89901             5.30%    passed     75.03%
+  32  Imantodes_cenchoa_IBSP90389             5.30%    passed     61.52%
+  33  Imantodes_cenchoa_IBSP90474             5.30%    passed     61.64%
+WARNING: 2 sequences contain more than 50% gaps/ambiguity
+****  TOTAL                                  37.35%  0 sequences failed composition chi2 test (p-value<5%; df=3)
+NOTE: No CharPartition defined, use all CharSets
+
+Loading 6 partitions...
+Subset	Type	Seqs	Sites	Infor	Invar	Model	Name
+1		33	370	45	301	MFP+MERGE	cytb1
+2		33	370	14	338	MFP+MERGE	cytb2
+3		33	370	216	102	MFP+MERGE	cytb3
+4		32	492	49	412	MFP+MERGE	nd41
+5		32	492	49	412	MFP+MERGE	nd42
+6		32	492	49	412	MFP+MERGE	nd43
+Degree of missing data: 0.017
+Info: multi-threading strategy over partitions
+
+
+
+Create initial parsimony tree by phylogenetic likelihood library (PLL)... 0.005 seconds
+NOTE: ModelFinder requires 12 MB RAM!
+Testing GTR+F+G on supermatrix...
+WARNING: Number of threads seems too high for short alignments. Use -nt AUTO to determine best number of threads.
+GTR+F+G4 / LnL: -9732.172 / df: 72 / AIC: 19608.344 / AICc: 19612.527 / BIC: 20030.110
+Selecting individual models for 6 charsets using BIC...
+ No. Model        Score       Charset
+   1 TPM2+F+G4    2676.271    cytb1
+   2 TN+F+I       1875.052    cytb2
+   3 TIM2+F+G4    3220.965    nd41
+   4 TIM2+F+G4    3220.965    nd42
+   5 TIM2+F+G4    3220.965    nd43
+   6 TIM3+F+G4    6343.974    cytb3
+Full partition model BIC score: 21301.136 (LnL: -9031.847  df:412)
+Merging models to increase model fit (about 31 total partition schemes)...
+   7 TPM2u+F+R2   20861.036   cytb1+cytb2
+   8 TIM2+F+R2    20903.469   cytb1+nd41
+WARNING: ABNORMAL_TERMINATION_IN_LNSRCH
+WARNING: ABNORMAL_TERMINATION_IN_LNSRCH
+   9 TIM2+F+R2    20903.469   cytb1+nd42
+  10 TIM2+F+I+G4  21425.645   cytb2+cytb3	0h:0m:14s (0h:0m:30s left)
+  11 TIM2+F+I+G4  21380.798   cytb3+nd43	0h:0m:14s (0h:0m:26s left)
+  12 TIM2+F+I+G4  21380.798   cytb3+nd41	0h:0m:14s (0h:0m:22s left)
+  13 TIM2+F+I+G4  21380.798   cytb3+nd42	0h:0m:14s (0h:0m:20s left)
+  14 TIM2+F+R2    20903.469   cytb1+nd43	0h:0m:14s (0h:0m:18s left)
+  15 TIM2+F+R2    20767.405   nd42+nd43	0h:0m:16s (0h:0m:17s left)
+  16 TIM2+F+R2    20767.405   nd41+nd43	0h:0m:16s (0h:0m:15s left)
+  17 TIM2+F+I+G4  21277.274   cytb1+cytb3	0h:0m:17s (0h:0m:14s left)
+  18 TPM2u+F+R2   20947.416   cytb2+nd41	0h:0m:17s (0h:0m:12s left)
+  19 TPM2u+F+R2   20947.416   cytb2+nd43	0h:0m:17s (0h:0m:10s left)
+  20 TPM2u+F+R2   20947.416   cytb2+nd42	0h:0m:17s (0h:0m:9s left)
+  21 TIM2+F+R2    20767.405   nd41+nd42	0h:0m:17s (0h:0m:8s left)
+Merging nd42+nd43 with BIC score: 20767.405 (LnL: -9028.220  df: 345)
+WARNING: ABNORMAL_TERMINATION_IN_LNSRCH
+  22 TIM2+F+R2    20229.439   nd41+nd42+nd43	0h:0m:19s (0h:0m:7s left)
+  23 TIM2+F+R2    20450.452   cytb2+nd42+nd43	0h:0m:19s (0h:0m:6s left)
+  24 TIM2+F+R2    20404.409   cytb1+nd42+nd43	0h:0m:19s (0h:0m:5s left)
+  25 TIM2+F+I+G4  21078.848   cytb3+nd42+nd43	0h:0m:24s (0h:0m:5s left)
+Merging nd41+nd42+nd43 with BIC score: 20229.439 (LnL: -9026.405  df: 277)
+  26 TIM2+F+R2    19929.955   cytb2+nd41+nd42+nd43	0h:0m:25s (0h:0m:4s left)
+  27 TIM2+F+R2    19888.464   cytb1+nd41+nd42+nd43	0h:0m:26s (0h:0m:3s left)
+WARNING: ABNORMAL_TERMINATION_IN_LNSRCH
+WARNING: ABNORMAL_TERMINATION_IN_LNSRCH
+  28 TIM2+F+R2    20684.833   cytb3+nd41+nd42+nd43	0h:0m:30s (0h:0m:3s left)
+Merging cytb1+cytb2 with BIC score: 19789.339 (LnL: -9073.522  df: 209)
+WARNING: ABNORMAL_TERMINATION_IN_LNSRCH
+  29 TIM2+F+R2    19551.626   cytb1+cytb2+nd41+nd42+nd43	0h:0m:32s (0h:0m:2s left)
+  30 TPM2+F+G4    19996.747   cytb1+cytb2+cytb3	0h:0m:35s (0h:0m:1s left)
+Merging cytb1+cytb2+nd41+nd42+nd43 with BIC score: 19551.626 (LnL: -9221.833  df: 141)
+  31 TIM2+F+G4    20025.120   cytb1+cytb2+cytb3+nd41+nd42+nd43	0h:0m:40s (0h:0m:0s left)
+BEST-FIT PARTITION MODEL: 
+  charpartition BIC = TIM2+F+R2: cytb1 cytb2 nd41 nd42 nd43, TIM3+F+G4: cytb3;
+Agglomerative model selection: (((cytb1,cytb2)3:19789.3,(nd41,(nd42,nd43)1:20767.4)2:20229.4)4:19551.6,cytb3)
+Merging into 2 partitions...
+Partition information was printed to ../Imantodes/Cytb_ND4_Partition.nexus.best_scheme.nex
+Partition information in Raxml format was printed to ../Imantodes/Cytb_ND4_Partition.nexus.best_scheme
+
+All model information printed to ../Imantodes/Cytb_ND4_Partition.nexus.model.gz
+CPU time for ModelFinder: 119.579 seconds (0h:1m:59s)
+Wall-clock time for ModelFinder: 40.745 seconds (0h:0m:40s)
+Generating 1000 samples for ultrafast bootstrap (seed: 646929)...
+
+NOTE: 4 MB RAM (0 GB) is required!
+Estimate model parameters (epsilon = 0.100)
+Optimizing TIM3+F+G4 parameters for partition cytb3 (70 free parameters)
+Optimizing TIM2+F+R2 parameters for partition cytb1+cytb2+nd41+nd42+nd43 (71 free parameters)
+Optimal log-likelihood: -9229.127
+Computing ML distances based on estimated model parameters... 0.021 sec
+Computing BIONJ tree...
+0.002 seconds
+Log-likelihood of BIONJ tree: -9313.132
+--------------------------------------------------------------------
+|             INITIALIZING CANDIDATE TREE SET                      |
+--------------------------------------------------------------------
+Generating 98 parsimony trees... 0.318 second
+Computing log-likelihood of 98 initial trees ... 0.458 seconds
+Current best score: -9225.812
+
+Do NNI search on 20 best initial trees
+Estimate model parameters (epsilon = 0.100)
+BETTER TREE FOUND at iteration 1: -9215.506
+Estimate model parameters (epsilon = 0.100)
+BETTER TREE FOUND at iteration 9: -9213.874
+Iteration 10 / LogL: -9214.090 / Time: 0h:0m:1s
+Iteration 20 / LogL: -9215.312 / Time: 0h:0m:1s
+Finish initializing candidate tree set (3)
+Current best tree score: -9213.874 / CPU time: 1.391
+Number of iterations: 20
+--------------------------------------------------------------------
+|               OPTIMIZING CANDIDATE TREE SET                      |
+--------------------------------------------------------------------
+Estimate model parameters (epsilon = 0.100)
+BETTER TREE FOUND at iteration 22: -9210.852
+Estimate model parameters (epsilon = 0.100)
+UPDATE BEST LOG-LIKELIHOOD: -9210.760
+Estimate model parameters (epsilon = 0.100)
+UPDATE BEST LOG-LIKELIHOOD: -9210.668
+Iteration 30 / LogL: -9226.391 / Time: 0h:0m:2s (0h:0m:6s left)
+Iteration 40 / LogL: -9210.957 / Time: 0h:0m:2s (0h:0m:5s left)
+Iteration 50 / LogL: -9224.968 / Time: 0h:0m:3s (0h:0m:4s left)
+Log-likelihood cutoff on original alignment: -9241.495
+Iteration 60 / LogL: -9236.105 / Time: 0h:0m:3s (0h:0m:4s left)
+Iteration 70 / LogL: -9210.854 / Time: 0h:0m:4s (0h:0m:3s left)
+Iteration 80 / LogL: -9210.922 / Time: 0h:0m:5s (0h:0m:2s left)
+Iteration 90 / LogL: -9214.010 / Time: 0h:0m:5s (0h:0m:2s left)
+Iteration 100 / LogL: -9210.802 / Time: 0h:0m:6s (0h:0m:1s left)
+Log-likelihood cutoff on original alignment: -9241.526
+NOTE: Bootstrap correlation coefficient of split occurrence frequencies: 0.975
+NOTE: UFBoot does not converge, continue at least 100 more iterations
+UPDATE BEST LOG-LIKELIHOOD: -9210.668
+Iteration 110 / LogL: -9225.034 / Time: 0h:0m:6s (0h:0m:5s left)
+Iteration 120 / LogL: -9210.776 / Time: 0h:0m:7s (0h:0m:4s left)
+Iteration 130 / LogL: -9210.722 / Time: 0h:0m:7s (0h:0m:4s left)
+Iteration 140 / LogL: -9229.561 / Time: 0h:0m:8s (0h:0m:3s left)
+Iteration 150 / LogL: -9225.001 / Time: 0h:0m:9s (0h:0m:3s left)
+Log-likelihood cutoff on original alignment: -9242.995
+Iteration 160 / LogL: -9210.685 / Time: 0h:0m:9s (0h:0m:2s left)
+Iteration 170 / LogL: -9210.711 / Time: 0h:0m:10s (0h:0m:1s left)
+Iteration 180 / LogL: -9210.682 / Time: 0h:0m:10s (0h:0m:1s left)
+Iteration 190 / LogL: -9225.081 / Time: 0h:0m:11s (0h:0m:0s left)
+Iteration 200 / LogL: -9210.807 / Time: 0h:0m:12s (0h:0m:0s left)
+Log-likelihood cutoff on original alignment: -9243.885
+NOTE: Bootstrap correlation coefficient of split occurrence frequencies: 0.997
+TREE SEARCH COMPLETED AFTER 200 ITERATIONS / Time: 0h:0m:12s
+
+--------------------------------------------------------------------
+|                    FINALIZING TREE SEARCH                        |
+--------------------------------------------------------------------
+Performs final model parameters optimization
+Estimate model parameters (epsilon = 0.010)
+Optimizing TIM3+F+G4 parameters for partition cytb3 (70 free parameters)
+Optimizing TIM2+F+R2 parameters for partition cytb1+cytb2+nd41+nd42+nd43 (71 free parameters)
+Optimal log-likelihood: -9210.616
+BEST SCORE FOUND : -9210.616
+Creating bootstrap support values...
+Split supports printed to NEXUS file ../Imantodes/Cytb_ND4_Partition.nexus.splits.nex
+Total tree length: 1.250
+
+Total number of iterations: 200
+CPU time used for tree search: 69.920 sec (0h:1m:9s)
+Wall-clock time used for tree search: 11.963 sec (0h:0m:11s)
+Total CPU time used: 71.508 sec (0h:1m:11s)
+Total wall-clock time used: 12.259 sec (0h:0m:12s)
+
+Computing bootstrap consensus tree...
+Reading input file ../Imantodes/Cytb_ND4_Partition.nexus.splits.nex...
+33 taxa and 175 splits.
+Consensus tree written to ../Imantodes/Cytb_ND4_Partition.nexus.contree
+Reading input trees file ../Imantodes/Cytb_ND4_Partition.nexus.contree
+Log-likelihood of consensus tree: -9210.615
+
+Analysis results written to: 
+  IQ-TREE report:                ../Imantodes/Cytb_ND4_Partition.nexus.iqtree
+  Maximum-likelihood tree:       ../Imantodes/Cytb_ND4_Partition.nexus.treefile
+  Likelihood distances:          ../Imantodes/Cytb_ND4_Partition.nexus.mldist
+  Best partitioning scheme:      ../Imantodes/Cytb_ND4_Partition.nexus.best_scheme.nex
+           in RAxML format:      ../Imantodes/Cytb_ND4_Partition.nexus.best_scheme
+
+Ultrafast bootstrap approximation results written to:
+  Split support values:          ../Imantodes/Cytb_ND4_Partition.nexus.splits.nex
+  Consensus tree:                ../Imantodes/Cytb_ND4_Partition.nexus.contree
+  Screen log file:               ../Imantodes/Cytb_ND4_Partition.nexus.log
+
+Date and Time: Sun May  3 13:19:58 2020

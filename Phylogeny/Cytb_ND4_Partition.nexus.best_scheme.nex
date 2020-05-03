@@ -1,8 +1,0 @@
-#nexus
-begin sets;
-  charset cytb1_cytb2_nd41_nd42_nd43 = 1-1110\3  2-1110\3  1111-2585\3  1111-2585\3  1111-2585\3;
-  charset cytb3 = 3-1110\3;
-  charpartition mymodels =
-    TIM2+F+R2: cytb1_cytb2_nd41_nd42_nd43,
-    TIM3+F+G4: cytb3;
-end;

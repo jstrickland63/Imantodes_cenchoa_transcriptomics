@@ -6,7 +6,7 @@ ImantodesComp <- read.csv("Imantodes_RAW.csv",header = TRUE)
 View(ImantodesComp)
 ################ForMac
 i=2 ##starts with first individual which should be your second column
-while(i<=5) ##Goes to your last column which should be your last individual
+while(i<=4) ##Goes to your last column which should be your last individual
 {
   name1="/HPLC/Graphs/"
   num=(colnames(ImantodesComp[i]))

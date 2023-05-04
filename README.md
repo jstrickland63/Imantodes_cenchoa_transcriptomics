@@ -14,7 +14,8 @@
 
 | Repository Folder | Description |
 |-------------------|-------------|
-| HPLC              |             |
+| HPLC              | This folder contains the raw HPLC data for the 3 individuals used 
+in this study. |
 | Orthofinder       |             |
 | Phylogeny         |             |
 | qMS               |             |

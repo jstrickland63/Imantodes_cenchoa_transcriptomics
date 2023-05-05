@@ -14,13 +14,12 @@
 
 | Repository Folder | Description |
 |-------------------|-------------|
-| HPLC              | This folder contains the raw HPLC data for the 3 individuals used 
-in this study. |
-| Orthofinder       |             |
-| Phylogeny         |             |
-| qMS               |             |
-| RSEM              |             |
-| Sequence          |             |
+| HPLC              | This folder contains the raw HPLC data for the 3 individuals used in this study. |
+| Orthofinder       | This folder contains the orthogroups and output from Orthofinder |
+| Phylogeny         | This folder contains the phylogeny figure used in the manuscript |
+| qMS               | This folder contains the raw qMS data |
+| RSEM              | This folder contains the RSEM analysis output |
+| Sequence          | This folder contains the sequence data not on Genbank |
 
 </center>
 

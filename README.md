@@ -1,10 +1,10 @@
 # Venom phenotype conservation suggests integrated specialization in a lizard-eating snake
 
-[![](https://img.shields.io/badge/Citation-Toxicon-blue)]()
+[![](https://img.shields.io/badge/Citation-Toxicon-blue)](https://www.sciencedirect.com/science/article/abs/pii/S0041010123001216?via%3Dihub)
 [![](https://img.shields.io/badge/License-CC%20BY-blue)](https://creativecommons.org/licenses/by/4.0/)
 
 
-> This repository contains the data and code for [Heptinstall & Strickland et al. (2023)]() including raw HPLC and qMS data, transcriptome expression estimates, transcriptome orthofinder results, phylotranscriptomic results, and scripts to estimate sequence evolution.
+> This repository contains the data and code for [Heptinstall & Strickland et al. (2023)](https://www.sciencedirect.com/science/article/abs/pii/S0041010123001216?via%3Dihub) including raw HPLC and qMS data, transcriptome expression estimates, transcriptome orthofinder results, phylotranscriptomic results, and scripts to estimate sequence evolution.
 
 <br>
 

@@ -1,0 +1,444 @@
+---
+title: '*Imantodes* SNP Analysis'
+author: Jason L. Strickland, ..., Christopher L. Parkinson
+date: "`r format(Sys.time(), '%Y %B %d')`"
+output:
+  pdf_document:
+    toc: yes
+  html_notebook:
+    theme: journal
+    toc: yes
+    toc_float: yes
+---
+
+# SNP Processing
+## SNP Calling
+Below is a PBS script which uses `bwa`, `picard-tools`, `GATK`, `bedtools`, `bcftools`, `samtools`, and `WhatsHap` to call SNPs from merged reads mapped to a consensus transcriptome. The output is two coverage files which show how much coverage there is for each site in each transcript and at what locations there is 0 coverage. Additionally, the script produces a vcf of indels, a vcf of SNPs, a vcf of phased SNPs, and consensus alleles based on the phased SNP file with 0 coverage sites removed. 
+
+<details>
+  <summary>Show Code</summary>
+```{bash,eval=F,code_folding="hide"}
+#PBS -N Imantodes_SNP
+#PBS -l select=4:ncpus=16:mem=32gb,walltime=72:00:00
+#PBS -j oe
+#PBS -M rrautsa@clemson.edu
+#PBS -m abe
+
+source .bash_profile
+
+module load anaconda3
+source activate bio
+
+cd $PBS_O_WORKDIR
+
+cp ImantodesOrthologConsensus.fasta ref.fa
+
+bwa index ref.fa 
+picard CreateSequenceDictionary REFERENCE=ref.fa OUTPUT=ref.dict
+samtools faidx ref.fa
+faidx --transform bed ref.fa > ref.bed
+
+mkdir Variants
+
+parallel -a list.txt --sshloginfile $PBS_NODEFILE -j1 "source .bash_profile
+	module load anaconda3
+	conda activate bio
+	cd /zfs/venom/Rhett/2020_Imantodes/
+	mkdir {}
+	mv {}*.fastq {}
+	cd {}
+	bwa mem -M -t 2 -R '@RG\tID:foo\tSM:bar' ../ref.fa {}_M.assembled.fastq > {}_aln.sam
+	cat {}_aln.sam | grep -E 'NM:i:[0-2][[:space:]]|^@' > {}_filtered.sam
+	picard SortSam INPUT={}_filtered.sam OUTPUT={}.bam SORT_ORDER=coordinate
+	picard BuildBamIndex INPUT={}.bam
+	gatk3 -T RealignerTargetCreator -R ../ref.fa -I {}.bam -o realigner.intervals
+	gatk3 -T IndelRealigner -R ../ref.fa -I {}.bam -targetIntervals realigner.intervals -o {}_realigned.bam
+	gatk3 -T PrintReads -R ../ref.fa -I {}_realigned.bam  -rf OverclippedRead --filter_is_too_short_value 120 --do_not_require_softclips_both_ends -rf MappingQuality -mmq 40 -rf ReadLength -minRead 120 -maxRead 500 -o {}_realigned_filter.bam
+	gatk3 -T HaplotypeCaller -R ../ref.fa -I {}_realigned_filter.bam -o {}.g.vcf -ERC GVCF
+	gatk3 -T GenotypeGVCFs -R ../ref.fa -V {}.g.vcf -o output.vcf
+	gatk3 -T SelectVariants -R ../ref.fa -V output.vcf -selectType SNP -o raw_snps.vcf
+	gatk3 -T VariantFiltration -R ../ref.fa -V raw_snps.vcf --filterExpression 'QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0' --filterName 'FILTER' -o filtered_snps.vcf
+	gatk3 -T SelectVariants -R ../ref.fa -V output.vcf -selectType INDEL -o raw_indels.vcf
+	gatk3 -T VariantFiltration -R ../ref.fa -V raw_indels.vcf --filterExpression 'QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0' --filterName 'FILTER' -o filtered_indels.vcf
+	grep -E '^#|PASS' filtered_snps.vcf > {}_SNPs.vcf
+	grep -E '^#|PASS' filtered_indels.vcf > {}_INDELs.vcf
+	bedtools coverage -a ../ref.bed -b {}.bam -d > {}_coverage.txt
+	bedtools genomecov -bga -ibam {}.bam -g ../ref.bed > tmp.bed
+	grep -w 0$ tmp.bed > 0cov.bed
+	rm tmp.bed
+	cp {}_SNPs.vcf ../Variants/
+	cp {}_INDELs.vcf ../Variants/
+	cp {}_coverage.txt ../Variants/
+	cp 0cov.bed ../Variants/{}_0cov.bed
+	whatshap phase -o {}_phased.vcf {}_SNPs.vcf {}.bam
+	bgzip {}_phased.vcf
+	tabix {}_phased.vcf.gz
+	bcftools consensus -H 1 -f ../ref.fa {}_phased.vcf.gz > haplotype1.fasta
+	bcftools consensus -H 2 -f ../ref.fa {}_phased.vcf.gz > haplotype2.fasta
+	bedtools maskfasta -fi haplotype1.fasta -bed 0cov.bed -fo {}_allele1.fasta -mc -
+	bedtools maskfasta -fi haplotype2.fasta -bed 0cov.bed -fo {}_allele2.fasta -mc -
+	cp {}_allele*.fasta ../Variants/
+	cp {}_phased.vcf.gz ../Variants/"
+
+cd $PBS_O_WORKDIR
+cd Variants
+mkdir SNPs INDELs PhasedAlleles Coverage PhasedSNPs
+mv *_SNPs.vcf SNPs/
+mv *_INDELs.vcf INDELs/
+mv *_phased.vcf.gz PhasedSNPs/
+mv *_allele*.fasta PhasedAlleles/
+mv *_coverage.txt Coverage/
+mv *_0cov.bed Coverage/
+cd ..
+```
+</details>
+
+## snpEff setup
+First, you need to set up a "database" for `snpEff`. Given that *Imantodes* is not a model organism, we have to trick it into thinking it is. To do this, we use our consensus transcriptome as our database. 
+
+1. Set up a snpeff databases folder somewhere in which to store `snpEff` databases.
+2. Create a folder in this location for your Imantodes database. (e.g. `Icenc2`)
+3. Copy your consensus transcriptome into this folder with the EXACT name `sequences.fa`
+3. `conda install snpeff` in whatever environment you want
+4. Go to `~/anaconda3/envs/bio/share/snpeff-????/`
+5. Edit the `snpEff.config` to change `data.dir = ` to where ever you created your snpEff databases folder. Save and exit.
+6. Load `sequences.fasta` into Geneious
+7. Highlight all sequences and add an annotation...name all `CDS`
+8. Save the annotations and export all the sequences to a gff file (don't export sequences and use a strict gff3 format)
+9. Move the gff file to your `databases/Icenc2` folder and name as `genes.gff`
+10. Remove all commented lines `perl -pi -e 's/^#.*\n//g' genes.gff`
+11. Add some information to the end of each line `perl -pi -e 's/^(.*?)(\t.*)/$1$2gene_id "$1"; transcript_id "1"/gm' genes.gff`
+12. Let `snpEff` know this database exists by adding it to your config file. `echo "Icenc2.genome : Icenc2" >> ~/anaconda3/envs/bio/share/snpeff-4.3.1t-3/snpEff.config`
+13. Run `snpEff build -gff3 -v Icenc2`
+14. You've got your database set up and are ready for snpEff
+
+## Combining VCFs
+Now we need to combine our vcf files
+```{bash,eval=F}
+cd /Users/rhettrautsaw/Dropbox/Projects/2019_Immantodes/Data_v2/PhasedSNPs
+for i in `cat list.txt`
+do 
+gunzip ${i}_phased.vcf.gz
+perl -pi -e "s/\tbar/\t$i/g" ${i}_phased.vcf
+bgzip -c ${i}_phased.vcf > ${i}_phased.vcf.gz
+tabix -fp vcf ${i}_phased.vcf.gz
+done
+
+mkdir Analysis
+
+# Merge SNPs into a single file
+bcftools merge *_phased.vcf.gz > Analysis/Combined.vcf
+cd Analysis
+bgzip -c Combined.vcf > Combined.vcf.gz
+tabix -fp vcf Combined.vcf.gz
+```
+
+# Analysis
+
+## R setup
+``` {r, warning=F, message=F}
+library(readxl)
+library(ggpubr)
+library(patchwork)
+library(dplyr)
+library(tidyr)
+library(seqinr)
+```
+
+## snpEff
+```{bash,eval=F}
+snpEff Icenc2 Combined.vcf.gz > snpEff/Annotated.vcf
+```
+
+```{r}
+Data<-read_excel("./Data_v2/PhasedSNPs/Analysis/snpEff/snpEff_Summary.xlsx")
+Data$name<-as.factor(Data$name)
+Data$class<-as.factor(Data$class)
+#Data$toxin_class<-as.factor(Data$toxin_class)
+
+snpEff<-Data
+snpEff$total_snpKB<-(snpEff$Total_variants/snpEff$length)*1000
+snpEff$syn_snpKB<-(snpEff$Synonymous/snpEff$length)*1000
+snpEff$nonsyn_snpKB<-(snpEff$Total_Nonsynonymous/snpEff$length)*1000
+```
+
+```{r}
+x<-snpEff %>% group_by(class) %>% summarize(n=n(),
+                   perKB_all=mean(total_snpKB),
+                   perKB_all_med=median(total_snpKB),
+                   perKB_all_sd=sd(total_snpKB),
+                   Total_Nonsynonymous=sum(Total_Nonsynonymous),
+                   Total_Synonymous=sum(Synonymous),
+                   Total_Variants=sum(Total_variants),
+                   Prop_nonsyn=(Total_Nonsynonymous/Total_Variants),
+                   Prop_syn=(Total_Synonymous/Total_Variants))
+x
+```
+
+
+Is there a significant association between the type of mutation (nonsynonymous vs. synonymous) and the transcript class (toxin vs. nontoxin)?
+```{r}
+chisq.test(x[,5:6])
+
+x2<-x
+colnames(x2)[c(8,9)]<-c("Nonsynonymous","Synonymous")
+x2 <-x2 %>% gather(key="mutation",value="proportion",Nonsynonymous,Synonymous)
+x2<-x2[,c(1,8,9)]
+
+A<-ggbarplot(data=x2,x="class",y="proportion",
+         fill="mutation", palette = c("black","gray"),position = position_stack(reverse=T),
+         ylab="Proportion of SNPs",xlab="Class")
+A<-ggpar(A,font.x=25, font.y=25, font.legend=20, font.tickslab = 20, legend="top")
+```
+
+Is there a significant difference in the number of SNPs per kilobase between toxin and nontoxins?
+```{r, echo=F}
+#(m<-summary(lm(snpEff$total_snpKB~snpEff$class)))
+#
+#results<-matrix(nrow=1000,ncol=2)
+#set.seed(2020)
+#for(i in 1:1000) {
+#  samp<-sample(snpEff_nontox$total_snpKB,x$n[2], replace=T)
+#  samp<-cbind(rep("Nontoxin",x$n[2]),samp)
+#  colnames(samp)<-c("class","total_snpKB")
+#  data<-snpEff_tox[,c("class","total_snpKB")]
+#  data<-rbind(data,samp)
+#  z<-summary(lm(data$total_snpKB~data$class))
+#  results[i,1]<-round(z$r.squared,2)
+#  results[i,2]<-round(z$coefficients[2,4],2)
+#}
+#pie_results<-unlist(as.data.frame(table(results[,2] < 0.05),row.names = c("FALSE","TRUE"))[2])
+#lbls<-c("False","True")
+#pct<-as.vector(round(pie_results/sum(pie_results)*100,2))
+#lbls<-paste(lbls,pct)
+#lbls<-paste(lbls,"%",sep="")
+#pie(pie_results,labels=lbls,col=c("red","green"),main="SNP's per kb")
+#b<-round(pct[2]*0.01,2)
+
+#ggdensity(snpEff,"total_snpKB",fill="class",palette = c("blue","red"), xlab = "SNPs per kb")
+#ggdensity(snpEff,"syn_snpKB",fill="class",palette = c("blue","red"), xlab = "Synonymous SNPs per kb")
+#ggdensity(snpEff,"nonsyn_snpKB",fill="class",palette = c("blue","red"), xlab = "Nonsynonymous SNPs per kb")
+```
+
+```{r}
+my_comparisons<-list( c("Nontoxin","Toxin"))
+symnum.args = list(cutpoints=c(0,0.05,1),symbols=c("*","ns"))
+B<-ggviolin(data=snpEff,x="class",y=c("total_snpKB","syn_snpKB","nonsyn_snpKB"),combine=T,
+         fill="class", palette = "grey", legend="none",
+         ylab="SNPs per kb",xlab="Class",add="median_iqr")+
+  stat_compare_means(comparisons = my_comparisons,label="p.signif",method="t.test", symnum.args = symnum.args, size=10)
+B<-ggpar(B,font.x=25, font.y=25, font.legend=20, font.tickslab = 20, legend="none")
+```
+
+```{r}
+pdf("SNP_Plot1.pdf",width=14,height=7) #Original = 14x7
+A + B + plot_layout(widths = c(1, 3)) + plot_annotation(tag_levels = 'A') & theme(plot.tag=element_text(size=30))
+dev.off()
+```
+
+
+## Tajimas D
+```{bash,eval=F}
+mkdir TajimasD
+vcftools --vcf Combined.vcf --TajimaD 1 --out TajimasD/Imantodes_site
+perl -pi -e 's/.*nan\n//g' TajimasD/Imantodes_site.Tajima.D 
+vcftools --vcf Combined.vcf --TajimaD 10000 --out TajimasD/Imantodes_gene
+```
+
+```{r}
+TajimasD<- read.delim("./Data_v2/PhasedSNPs/Analysis/TajimasD/Imantodes_gene.Tajima.D")
+
+TajimasD$class<-gsub("_consensus","",TajimasD$CHROM)
+TajimasD$class<-gsub(".*_","",TajimasD$class)
+TajimasD$class<-gsub("OG.*","Nontoxin",TajimasD$class)
+
+
+my_comparisons<-list( c("Nontoxin","Toxin"))
+C<-ggviolin(TajimasD,x="class",y="TajimaD",
+         fill="class", palette = "grey", legend="none",order = c("Nontoxin","Toxin"),
+         ylab="Tajima's D",xlab="Class",add="median_iqr")+
+  stat_compare_means(comparisons = my_comparisons,label="p.signif",method="t.test", symnum.args = symnum.args, size=10)
+C<-ggpar(C,font.x=25, font.y=25, font.legend=20, font.tickslab = 20, legend="none")
+
+tapply(TajimasD$TajimaD, TajimasD$class, summary)
+```
+
+
+## Nucleotide Diversity
+```{bash,eval=F}
+mkdir Pi
+vcftools --vcf Combined.vcf --site-pi --out Pi/Imantodes
+```
+
+```{r}
+Pi<- read.delim("./Data_v2/PhasedSNPs/Analysis/Pi/Imantodes.sites.pi")
+
+Pi$class<-gsub("_consensus","",Pi$CHROM)
+Pi$class<-gsub(".*_","",Pi$class)
+Pi$class<-gsub("OG.*","Nontoxin",Pi$class)
+
+Pi2<- Pi %>% group_by(CHROM, class) %>% summarize(PI=mean(PI))
+
+my_comparisons<-list( c("Nontoxin","Toxin"))
+D<-ggviolin(Pi2,x="class",y="PI",
+         fill="class", palette = "grey", legend="none",order = c("Nontoxin","Toxin"),
+         ylab="Pi",xlab="Class",add="median_iqr")+
+  stat_compare_means(comparisons = my_comparisons,label="p.signif",method="t.test", symnum.args = symnum.args, size=10)
+D<-ggpar(D,font.x=25, font.y=25, font.legend=20, font.tickslab = 20, legend="none")
+
+tapply(Pi2$PI, Pi2$class, summary)
+```
+
+## Pairwise Distance
+```{bash,eval=F}
+for i in `cat list.txt`
+do echo $i
+Linearize.py -f ${i}_allele1.fasta
+Linearize.py -f ${i}_allele2.fasta
+perl -pi -e "s/>OG/>${i}_allele1_OG/g" ${i}_allele1.fasta
+perl -pi -e "s/>OG/>${i}_allele2_OG/g" ${i}_allele2.fasta
+done
+
+
+parallel -a genes.txt -j 8 "echo {}
+grep -h -A1 {} *.fasta >> Genes/{}.fasta
+perl -pi -e 's/^--\n//g' Genes/{}.fasta"
+```
+
+```{r}
+#setwd("~/Dropbox/Projects/2019_Immantodes/Data_v2/PhasedAlleles/Genes/")
+path<-"~/Dropbox/Projects/2019_Immantodes/Data_v2/PhasedAlleles/Genes_backup/"
+my_files<-list.files(path = path, pattern="*.fasta")
+dist<-matrix(nrow=length(my_files),ncol=2)
+colnames(dist)<-c("CHROM","dist")
+j<-0
+for(i in seq_along(my_files)){
+  j<-j+1
+  myseqs <- read.alignment(paste0(path,my_files[[i]]), format = "fasta")
+  mat <- dist.alignment(myseqs, matrix = "identity")
+  x<-mean(mat)
+  dist[j,1]<-my_files[[i]]
+  dist[j,2]<-x
+}
+
+dist<-as.data.frame(dist)
+dist$class<-gsub("_consensus.fasta","",dist$CHROM)
+dist$class<-gsub(".*_","",dist$class)
+dist$class<-gsub("OG.*","Nontoxin",dist$class)
+dist$CHROM<-as.factor(dist$CHROM)
+dist$class<-as.factor(dist$class)
+dist$dist<-as.numeric(as.character(dist$dist))
+
+my_comparisons<-list( c("Nontoxin","Toxin"))
+E<-ggviolin(dist,x="class",y="dist",
+         fill="class", palette = "grey", legend="none",order = c("Nontoxin","Toxin"),
+         ylab="Mean Pairwise Distance",xlab="Class",add="median_iqr")+
+  stat_compare_means(comparisons = my_comparisons,label="p.signif",method="t.test", symnum.args = symnum.args, size=10)
+E<-ggpar(E,font.x=25, font.y=25, font.legend=20, font.tickslab = 20, legend="none")
+
+tapply(dist$dist, dist$class, summary)
+```
+
+```{r}
+pdf("SNP_Plot2.pdf",width=14,height=7) #Original: 14 x 7
+C + D + E + plot_annotation(tag_levels = 'A') & theme(plot.tag=element_text(size=30))
+dev.off()
+```
+
+## PAML
+```{bash,eval=F}
+cp -r Genes Genes_backup
+
+cd Genes
+perl -pi -e 's/_OG.*_consensus//g' *.fasta
+
+## Construct Species Tree
+grep -v "Toxin" genes.txt > nontoxins.txt
+parallel -a nontoxins.txt -j 8 "cd Genes
+iqtree -s {}.fasta -bb 1000 -seed 12345"
+
+mkdir species_tree
+cat Genes/*.contree > species_tree/all_gene_trees.tre
+java -jar ~/Dropbox/bin/Astral/astral.5.6.3.jar --input all_gene_trees.tre --output ASTRAL_spp.tree
+java -jar ~/Dropbox/bin/Astral/astral.5.6.3.jar --input all_gene_trees.tre -a ASTRAL_mapping_file.txt --output ASTRAL_spp_no_alleles.tree
+
+cp -r Genes_backup Genes_codeml
+
+parallel -a genes.txt -j 8 "cd Genes_codeml
+mkdir {}
+mv {}.fasta {}
+cd {}
+perl -pi -e 's/_OG.*_consensus//g' {}.fasta
+grep -A1 allele1 {}.fasta > {}.fasta.2
+mv {}.fasta.2 {}.fasta
+perl -pi -e 's/--\n//g' {}.fasta
+perl -pi -e 's/_allele1//g' {}.fasta
+RemoveStop.py -f {}.fasta
+Format-treeNalignment-4-codeml.py -f {}_noStop.fasta -t ../../species_tree/ASTRAL_spp_no_alleles.tree -o codeml.phy -to codeml.tre
+codeml ../codeml.ctl
+grep lnL results | tr '\n' ' ' > results_lnL.txt
+grep omega results > results_omega.txt
+echo {} | tr '\n' ' ' > name.txt
+cat name.txt results_lnL.txt results_omega.txt >> ../results.txt"
+
+```
+
+```{r}
+paml<-read_excel("~/Dropbox/Projects/2019_Immantodes/Data_v2/PhasedAlleles/Genes_codeml/results.xlsx")
+paml$class<-as.factor(paml$class)
+
+## M0 : Estimating Omega
+## Red line indicate omega = 1
+paml2<-paml %>% filter(omega > 0.0001) %>% filter(omega < 999)
+group_by(paml2,class) %>% summarize(omega = mean(omega,na.rm=T))
+my_comparisons<-list( c("Nontoxin","Toxin"))
+F<-ggviolin(paml2,x="class",y="omega",
+         fill="class", palette = "grey", legend="none",order = c("Nontoxin","Toxin"),
+         ylab="Omega", xlab="Class", add="median_iqr") +
+  yscale("log10", .format = T) + geom_hline(yintercept=1, color="red", size=1) +
+  stat_compare_means(comparisons = my_comparisons,label="p.signif",method="t.test", symnum.args = symnum.args, size=10)
+F<-ggpar(F,font.x=25, font.y=25, font.legend=20, font.tickslab = 20, legend="none")
+## There may be a few toxins under positive selection, but most are not.
+## What are those toxins?
+(paml2 %>% filter(class == "Toxin") %>% filter(omega > 1))[,1]
+tapply(paml2$omega, paml2$class, summary)
+
+## M2 (selection) vs. M1 (neutral)
+## Red lines indicate critcal value indicating significantly different
+paml2<-paml %>% filter(M1_M2_Stat > 0)
+group_by(paml2,class) %>% summarize(M1_M2_Stat = mean(M1_M2_Stat,na.rm=T))
+my_comparisons<-list( c("Nontoxin","Toxin"))
+G<-ggviolin(paml2,x="class",y="M1_M2_Stat",
+         fill="class", palette = "grey", legend="none",order = c("Nontoxin","Toxin"),
+         ylab="M1 v M2", xlab="Class", add="median_iqr") +
+  yscale("log10", .format = T) + geom_hline(yintercept=qchisq(0.95, 2), color="red", size=1) +
+  stat_compare_means(comparisons = my_comparisons,label="p.signif",method="t.test", symnum.args = symnum.args, size=10)
+G<-ggpar(G,font.x=25, font.y=25, font.legend=20, font.tickslab = 20, legend="none")
+## There may be a few toxins under positive selection, but most are not. 
+## What are those toxins?
+(paml2 %>% filter(class == "Toxin") %>% filter(M1_M2_Stat > qchisq(0.95, 2)))[,1]
+
+
+## M8 (selection) vs. M7 (neutral)
+## Red lines indicate critcal value indicating significantly different
+paml2<-paml %>% filter(M7_M8_Stat > 0)
+group_by(paml2,class) %>% summarize(M7_M8_Stat = mean(M7_M8_Stat,na.rm=T))
+my_comparisons<-list( c("Nontoxin","Toxin"))
+H<-ggviolin(paml2,x="class",y="M7_M8_Stat",
+         fill="class", palette = "grey", legend="none",order = c("Nontoxin","Toxin"),
+         ylab="M7 v M8", xlab="Class", add="median_iqr") +
+  yscale("log10", .format = T) + geom_hline(yintercept=qchisq(0.95, 2), color="red", size=1) +
+  stat_compare_means(comparisons = my_comparisons,label="p.signif",method="t.test", symnum.args = symnum.args, size=10)
+H<-ggpar(H,font.x=25, font.y=25, font.legend=20, font.tickslab = 20, legend="none")
+## There may be a few toxins under positive selection, but most are not.
+## What are those toxins?
+(paml2 %>% filter(class == "Toxin") %>% filter(M7_M8_Stat > qchisq(0.95, 2)))[,1]
+
+
+```
+
+```{r}
+pdf("SNP_Plot3.pdf",width=14,height=7) # Original: 14x7
+F + G + H + plot_annotation(tag_levels = 'A') & theme(plot.tag=element_text(size=30))
+dev.off()
+```
